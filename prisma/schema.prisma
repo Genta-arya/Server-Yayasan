@@ -14,14 +14,76 @@ datasource db {
 }
 
 model User {
-  id           String  @id @default(uuid())
-  nim          String  @unique
-  name         String?
+  id           String   @id @default(uuid())
+  username     String?
   email        String?
   password     String
-  status_login Boolean @default(false)
+  status_login Boolean  @default(false)
   avatar       String?
-  role         String  @default("user")
-  token        String?
+  role         String   @default("admin")
+  token        String?  @db.Text
   createdAt    DateTime @default(now())
+}
+
+model Posting {
+  id        String   @id @default(uuid())
+  title     String
+  content   String   @db.LongText
+  author    String
+  thumbnail String   @db.Text
+  slug      String
+  kategori  String
+  isArsip   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  comments  Comment[]
+  analytics Analytic?
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String   @db.Text
+  name      String
+  postingId String
+  status    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  posting   Posting  @relation(fields: [postingId], references: [id])
+}
+
+model Analytic {
+  id        String   @id @default(uuid())
+  postingId String   @unique
+  views     Int      @default(0)
+  likes     Int      @default(0)
+  unlikes Int @default(0)
+  avgIp     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  likeLogs   LikeLog[]
+  posting  Posting   @relation(fields: [postingId], references: [id])
+  viewLogs ViewLog[] // Relasi ke banyak log akses
+}
+
+model ViewLog {
+  id         String   @id @default(uuid())
+  analyticId String
+  ipAddress  String   @db.VarChar(45)
+  userAgent  String   @db.Text
+  country    String?
+  city       String?
+  accessedAt DateTime @default(now())
+
+  analytic Analytic @relation(fields: [analyticId], references: [id])
+}
+
+model LikeLog {
+  id          String   @id @default(uuid())
+  postingId   String
+  ipAddress   String
+  userAgent   String
+  createdAt   DateTime @default(now())
+
+  Analytic    Analytic @relation(fields: [postingId], references: [postingId])
 }
