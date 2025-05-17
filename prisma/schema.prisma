@@ -53,17 +53,17 @@ model Comment {
 }
 
 model Analytic {
-  id        String   @id @default(uuid())
-  postingId String   @unique
-  views     Int      @default(0)
-  likes     Int      @default(0)
-  unlikes Int @default(0)
-  avgIp     String   @default("")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  likeLogs   LikeLog[]
-  posting  Posting   @relation(fields: [postingId], references: [id])
-  viewLogs ViewLog[] // Relasi ke banyak log akses
+  id        String    @id @default(uuid())
+  postingId String    @unique
+  views     Int       @default(0)
+  likes     Int       @default(0)
+  unlikes   Int       @default(0)
+  avgIp     String    @default("")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  likeLogs  LikeLog[]
+  posting   Posting   @relation(fields: [postingId], references: [id])
+  viewLogs  ViewLog[] // Relasi ke banyak log akses
 }
 
 model ViewLog {
@@ -79,11 +79,32 @@ model ViewLog {
 }
 
 model LikeLog {
-  id          String   @id @default(uuid())
-  postingId   String
-  ipAddress   String
-  userAgent   String
-  createdAt   DateTime @default(now())
+  id        String   @id @default(uuid())
+  postingId String
+  ipAddress String
+  userAgent String
+  createdAt DateTime @default(now())
 
-  Analytic    Analytic @relation(fields: [postingId], references: [postingId])
+  Analytic Analytic @relation(fields: [postingId], references: [postingId])
+}
+
+model SPMB {
+  id        String   @id @default(uuid())
+  judul     String
+  konten    String?
+  type      String   @unique
+  header    String?
+  url_icon  String // <--- bukan enum, bebas
+  images    Image[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Image {
+  id         String   @id @default(uuid())
+  url        String
+  order      Int?
+  spmbId     String
+  spmb       SPMB     @relation(fields: [spmbId], references: [id], onDelete: Cascade)
+  uploadedAt DateTime @default(now())
 }
