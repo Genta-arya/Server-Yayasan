@@ -72,11 +72,11 @@ export const GetBeritaType = async (req, res) => {
         isArsip: true,
         createdAt: true,
         analytics: {
-          select:{
+          select: {
             likes: true,
-            unlikes: true
-          }
-        }
+            unlikes: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
@@ -272,11 +272,33 @@ export const DeleteBerita = async (req, res) => {
         isArsip: true,
       },
     });
-    await prisma.posting.delete({
+    // 1. Hapus LikeLog yang nyambung ke posting (lewat postingId)
+    await prisma.likeLog.deleteMany({
+      where: { postingId: id },
+    });
+
+    // 2. Hapus ViewLog lewat relasi dari Analytic
+    await prisma.viewLog.deleteMany({
       where: {
-        id: id,
+        analytic: { postingId: id },
       },
     });
+
+    // 3. Hapus Comment terkait
+    await prisma.comment.deleteMany({
+      where: { postingId: id },
+    });
+
+    // 4. Hapus Analytic yang terkait (setelah log-nya dihapus)
+    await prisma.analytic.deleteMany({
+      where: { postingId: id },
+    });
+
+    // 5. Terakhir, hapus Posting-nya
+    await prisma.posting.delete({
+      where: { id },
+    });
+
     sendResponse(res, 200, "Success");
   } catch (error) {
     sendError(res, error);
@@ -320,8 +342,7 @@ export const getDetailBerita = async (req, res) => {
       postingan = await prisma.posting.findUnique({
         where: { id },
       });
-    } 
-    else {
+    } else {
       return sendResponse(res, 400, "ID atau slug harus disertakan");
     }
 
