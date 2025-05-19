@@ -49,6 +49,10 @@ export const getDetailSpmb = async (req, res) => {
       });
     }
 
+    if (!spmb && !id) {
+      return res.status(404).json({ message: "SPMB tidak ditemukan" });
+    }
+
     return res
       .status(200)
       .json({ message: "Berhasil ambil detail", data: spmb });
