@@ -91,8 +91,9 @@ model LikeLog {
 model SPMB {
   id        String   @id @default(uuid())
   judul     String
-  konten    String? @db.LongText
+  konten    String?  @db.LongText
   type      String   @unique
+  status    Boolean  @default(true)
   header    String?
   url_icon  String // <--- bukan enum, bebas
   images    Image[]

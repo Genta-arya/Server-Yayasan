@@ -1,4 +1,5 @@
 import { prisma } from "../Config/Prisma.js";
+import { deleteFileCloud } from "../Config/Service.js";
 import { postBeritaSchema } from "../Library/Joi/Berita.validate.js";
 import { formatJoiError } from "../Utils/FormatError.js";
 import { sendError, sendResponse } from "../Utils/Response.js";
@@ -261,6 +262,17 @@ export const DeleteBerita = async (req, res) => {
         id: id,
       },
     });
+
+    const imageUrl = checkId.thumbnail;
+    const filename = imageUrl.split("/").pop();
+    const basename = filename.split(".")[0];
+    const parts = basename.split("_");
+    const fileId = parts[parts.length - 1];
+
+    const deleteImage = await deleteFileCloud(fileId);
+
+    console.log(fileId);
+
     if (!checkId) {
       return sendResponse(res, 400, "Postingan tidak ditemukan");
     }
@@ -272,7 +284,7 @@ export const DeleteBerita = async (req, res) => {
         isArsip: true,
       },
     });
-    // 1. Hapus LikeLog yang nyambung ke posting (lewat postingId)
+
     await prisma.likeLog.deleteMany({
       where: { postingId: id },
     });
