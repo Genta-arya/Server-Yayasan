@@ -25,7 +25,7 @@ export const getDetailSpmb = async (req, res) => {
 
     let spmb;
 
-    if (checckId) {
+    if (id) {
       spmb = await prisma.sPMB.findFirst({
         where: { type },
         include: {
