@@ -109,3 +109,16 @@ model Image {
   spmb       SPMB     @relation(fields: [spmbId], references: [id], onDelete: Cascade)
   uploadedAt DateTime @default(now())
 }
+
+model Slider {
+  id     String        @id @default(uuid())
+  images ImageSlider[]
+}
+
+model ImageSlider {
+  id        String  @id @default(uuid())
+  url       String
+  index     Int     // <-- tambahin ini
+  sliderId  String
+  slider    Slider  @relation(fields: [sliderId], references: [id])
+}

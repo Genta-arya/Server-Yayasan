@@ -31,7 +31,7 @@ export const getDetailSpmb = async (req, res) => {
         include: {
           images: {
             orderBy: {
-              order: "asc", // <--- ini bikin urut sesuai order
+              order: "asc", 
             },
           },
         },
@@ -42,7 +42,7 @@ export const getDetailSpmb = async (req, res) => {
         include: {
           images: {
             orderBy: {
-              order: "asc", // <--- ini bikin urut sesuai order
+              order: "asc",
             },
           },
         },
