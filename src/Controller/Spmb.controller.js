@@ -1,24 +1,53 @@
+import { check } from "prisma";
 import { prisma } from "../Config/Prisma.js";
 import { deleteFileCloud } from "../Config/Service.js";
 
 export const getDetailSpmb = async (req, res) => {
   try {
-    const { type } = req.params; // atau req.params kalau pakai route param
+    const { type } = req.params;
+
+    const { id } = req.query;
+
+    const checckId = await prisma.user.findFirst({
+      where: {
+        id: id,
+      },
+    });
+    if (id) {
+      if (!checckId) {
+        return res.status(400).json({ message: "User tidak ditemukan" });
+      }
+    }
 
     if (!type) {
       return res.status(400).json({ message: "Type harus disertakan" });
     }
 
-    const spmb = await prisma.sPMB.findFirst({
-      where: { type },
-      include: {
-        images: {
-          orderBy: {
-            order: "asc", // <--- ini bikin urut sesuai order
+    let spmb;
+
+    if (checckId) {
+      spmb = await prisma.sPMB.findFirst({
+        where: { type },
+        include: {
+          images: {
+            orderBy: {
+              order: "asc", // <--- ini bikin urut sesuai order
+            },
           },
         },
-      },
-    });
+      });
+    } else {
+      spmb = await prisma.sPMB.findFirst({
+        where: { type, status: true },
+        include: {
+          images: {
+            orderBy: {
+              order: "asc", // <--- ini bikin urut sesuai order
+            },
+          },
+        },
+      });
+    }
 
     return res
       .status(200)
@@ -28,6 +57,7 @@ export const getDetailSpmb = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 export const getSpmbData = async (req, res) => {
   try {
     const data = await prisma.sPMB.findMany({
