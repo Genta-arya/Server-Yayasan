@@ -116,9 +116,25 @@ model Slider {
 }
 
 model ImageSlider {
-  id        String  @id @default(uuid())
-  url       String
-  index     Int     // <-- tambahin ini
-  sliderId  String
-  slider    Slider  @relation(fields: [sliderId], references: [id])
+  id       String @id @default(uuid())
+  url      String
+  index    Int // <-- tambahin ini
+  sliderId String
+  slider   Slider @relation(fields: [sliderId], references: [id])
+}
+
+model Sambutan {
+  id        String @id @default(uuid())
+  url_Image String
+  konten    String @db.Text
+}
+
+model UnitPendidikan {
+  id        String   @id @default(uuid())
+  url_Image String
+  judul     String
+  deskripsi String
+  order     Int?     // Buat urutan tampil
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
