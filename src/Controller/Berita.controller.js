@@ -192,19 +192,20 @@ export const EditBerita = async (req, res) => {
       return sendResponse(res, 400, "Judul sudah digunakan");
     }
 
-    const currentDate = new Date();
-    const day = String(currentDate.getDate()).padStart(2, "0");
-    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-    const year = currentDate.getFullYear();
-
-    const generatedSlug = `${year}-${month}-${day}-${
-      title
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, "") // Hapus karakter selain huruf, angka, spasi, dan dash
-        .replace(/\s+/g, "-") // Ganti spasi dengan dash
-        .replace(/-+/g, "-") // Ganti multiple dash jadi satu
-        .replace(/^-+|-+$/g, "") // Hapus dash di awal/akhir
-    }`;
+   
+    
+    const generatedSlug =
+      title === postinganLama.title
+        ? postinganLama.slug // kalau judul sama, keep slug lama
+        : `${postinganLama.slug.split("-").slice(0, 3).join("-")}-${
+            // ambil yyyy-mm-dd dari slug lama
+            title
+              .toLowerCase()
+              .replace(/[^a-z0-9\s-]/g, "")
+              .replace(/\s+/g, "-")
+              .replace(/-+/g, "-")
+              .replace(/^-+|-+$/g, "")
+          }`;
 
     // Update postingan
     await prisma.posting.update({
