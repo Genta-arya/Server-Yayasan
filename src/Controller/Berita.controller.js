@@ -378,7 +378,7 @@ export const getDetailBeritaSlug = async (req, res) => {
     let postingan;
 
     postingan = await prisma.posting.findFirst({
-      where: { slug },
+      where: { slug , isArsip: true },
     });
 
     if (!postingan) {
