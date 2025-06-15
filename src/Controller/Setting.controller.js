@@ -259,3 +259,55 @@ export const getUnitPendidikan = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+export const handleProfil = async (req, res) => {
+  const { ImgVisi, ImgTentang, ImgSejarah } = req.body;
+  try {
+    const exitstData = await prisma.profil.findFirst();
+    if (exitstData) {
+      // Update existing profil
+      const updatedProfil = await prisma.profil.update({
+        where: { id: exitstData.id },
+        data: {
+          imgVisiMisi: ImgVisi,
+          ImgSejarah: ImgSejarah,
+          ImgTentangKami: ImgTentang,
+        },
+      });
+      return res.status(200).json({
+        message: "Profil berhasil diupdate",
+        data: updatedProfil,
+      });
+    } else {
+      // Create new profil
+      const newProfil = await prisma.profil.create({
+        data: {
+          imgVisiMisi: ImgVisi,
+          ImgSejarah: ImgSejarah,
+          ImgTentangKami: ImgTentang,
+        },
+      });
+      return res.status(201).json({
+        message: "Profil berhasil disimpan",
+        data: newProfil,
+      });
+    }
+  } catch (error) {
+    console.error("Gagal simpan profil:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+export const getProfil = async (req, res) => {
+  try {
+    const profil = await prisma.profil.findFirst();
+    if (!profil) {
+      return res.status(404).json({ message: "Profil tidak ditemukan" });
+    }
+    return res.status(200).json({ message: "Berhasil ambil data", data: profil });
+  } catch (error) {
+    console.error("Gagal ambil profil:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}

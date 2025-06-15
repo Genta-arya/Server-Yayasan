@@ -1,9 +1,11 @@
 import express from "express";
 import {
   getMetaData,
+  getProfil,
   GetSambutan,
   getSlider,
   getUnitPendidikan,
+  handleProfil,
   handleSambutan,
   handleUnitPendidikan,
   SliderHandle,
@@ -21,3 +23,5 @@ SettingRouter.post("/unitpendidikan", handleUnitPendidikan);
 SettingRouter.get("/unitpendidikan", getUnitPendidikan);
 SettingRouter.post("/gallery", GalleryHandle);
 SettingRouter.get("/gallery", getGallery);
+SettingRouter.post("/profil", handleProfil)
+SettingRouter.get("/profil", getProfil);

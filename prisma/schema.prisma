@@ -134,15 +134,23 @@ model UnitPendidikan {
   url_Image String
   judul     String
   deskripsi String
-  order     Int?     // Buat urutan tampil
+  order     Int? // Buat urutan tampil
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-
 model Gallery {
-  id String @id @default(uuid())
+  id        String   @id @default(uuid())
   url_image String
-  order Int
+  order     Int
   createdAt DateTime
+}
+
+model Profil {
+  id             String   @id @default(uuid())
+  imgVisiMisi    String?
+  ImgSejarah     String?
+  ImgTentangKami String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
