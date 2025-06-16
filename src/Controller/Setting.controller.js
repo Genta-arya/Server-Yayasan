@@ -261,7 +261,7 @@ export const getUnitPendidikan = async (req, res) => {
 };
 
 export const handleProfil = async (req, res) => {
-  const { ImgVisi, ImgTentang, ImgSejarah } = req.body;
+  const { ImgVisi, ImgTentang, ImgSejarah , kontenTentang } = req.body;
   try {
     const exitstData = await prisma.profil.findFirst();
     if (exitstData) {
@@ -272,6 +272,7 @@ export const handleProfil = async (req, res) => {
           imgVisiMisi: ImgVisi,
           ImgSejarah: ImgSejarah,
           ImgTentangKami: ImgTentang,
+          kontentTentangKami: kontenTentang,
         },
       });
       return res.status(200).json({
@@ -285,6 +286,7 @@ export const handleProfil = async (req, res) => {
           imgVisiMisi: ImgVisi,
           ImgSejarah: ImgSejarah,
           ImgTentangKami: ImgTentang,
+          kontentTentangKami: kontenTentang,
         },
       });
       return res.status(201).json({
